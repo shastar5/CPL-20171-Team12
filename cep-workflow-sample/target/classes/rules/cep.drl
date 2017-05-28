@@ -40,11 +40,8 @@ no-loop true
 	when
 		ssd: SmokeSensorData(SmokeLevel > 1, value: SmokeLevel) from entry-point gas
 	then
-	    System.out.print(13);
-		Rxtx rx = new Rxtx();
-		rx.a(123);
-		InputStream in;
-		new SerialWriter(in);
+	    ssd.seta(10);
+	    System.out.println(ssd.geta());
 end
 
 rule "High Dust Rule"

@@ -130,16 +130,17 @@ public class CEPTest {
 			EntryPoint ep3 = kSession.getEntryPoint("fingerprint");
 			EntryPoint ep4 = kSession.getEntryPoint("vibration");
 			EntryPoint ep5 = kSession.getEntryPoint("dust");
+			EntryPoint ep5 = kSession.getEntryPoint("value");
 
 			
 			// Rxtx
 			new Rxtx().connect("COM7");
 			SmokeSensorData ssd = new SmokeSensorData(102);
-	    	System.out.print(152);
 			ep2.insert(ssd);
 			kSession.fireAllRules();
 			kSession.halt();
 			kSession.dispose();
+			System.out.println(ssd.geta());
 			/*
 			for(int i = 0; i < THERMO_DATA.length; i++) {
 				System.out.println(i);
