@@ -17,7 +17,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 /**
  * This is a sample class to launch a rule.
  */
@@ -36,20 +35,20 @@ public class CEPTest {
 			
 			FanActuatorData fad = new FanActuatorData(false);
 			kSession.insert(fad);
-			EntryPoint ep1 = kSession.getEntryPoint("thermometer");		// 온도 센서 입력 스트림
-			EntryPoint ep2 = kSession.getEntryPoint("smoke");			// 연기 센서 입력 스트림
+			EntryPoint ep1 = kSession.getEntryPoint("thermometer");		// �삩�룄 �꽱�꽌 �엯�젰 �뒪�듃由�
+			EntryPoint ep2 = kSession.getEntryPoint("smoke");			// �뿰湲� �꽱�꽌 �엯�젰 �뒪�듃由�
 			
-			// 센서 값이 지속적으로 들어온다고 가정
+			// �꽱�꽌 媛믪씠 吏��냽�쟻�쑝濡� �뱾�뼱�삩�떎怨� 媛��젙
 			for(int i = 0; i < THERMO_DATA.length; i++) {
 				System.out.println(i);
 				Thread.sleep(1000);
-				//	두 개의 센서 값이 각각 다른 시점에 들어온다고 가정
+				//	�몢 媛쒖쓽 �꽱�꽌 媛믪씠 媛곴컖 �떎瑜� �떆�젏�뿉 �뱾�뼱�삩�떎怨� 媛��젙
 				ThermoSensorData tsd = new ThermoSensorData(THERMO_DATA[i]);
 				ep1.insert(tsd);
 				System.out.println("  T: " + THERMO_DATA[i]);
 				kSession.fireAllRules();
 				Thread.sleep(100);
-				//	두 개의 센서 값이 각각 다른 시점에 들어온다고 가정
+				//	�몢 媛쒖쓽 �꽱�꽌 媛믪씠 媛곴컖 �떎瑜� �떆�젏�뿉 �뱾�뼱�삩�떎怨� 媛��젙
 				SmokeSensorData ssd = new SmokeSensorData(SMOKE_DATA[i]);
 				ep2.insert(ssd);
 				System.out.println("  S: " + SMOKE_DATA[i]);
@@ -82,6 +81,7 @@ public class CEPTest {
 		KieSession kSession = kContainer.newKieSession();
 
 		return kSession;
+		
     }
     
     static StatefulKnowledgeSession loadDrlWithCEP() {
