@@ -1,10 +1,15 @@
 package com.sample.cep;
 
-public class VibrationData {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+public class VibrationData extends SensorData {
+	public VibrationData(long value) {
+		setVibration(value);
 	}
-
+	
+	public double getVibration() {
+		return getLongValue();
+	}
+	
+	public void setVibration(long value) {
+		setLongValue(value);
+	}
 }

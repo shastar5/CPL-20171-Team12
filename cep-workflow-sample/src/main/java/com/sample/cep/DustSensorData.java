@@ -1,7 +1,7 @@
 package com.sample.cep;
 
-public class DustData extends SensorData {
-	public DustData(double value) {
+public class DustSensorData extends SensorData {
+	public DustSensorData(double value) {
 		setDust(value);
 	}
 	

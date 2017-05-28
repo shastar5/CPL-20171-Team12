@@ -6,6 +6,19 @@ public class SensorData {
 	private double doubleValue;
 	private long longValue;
 	
+	private long longLimit = -1;
+	private double doubleLimit = -1;
+	
+	/*
+	 *
+	 * 
+	 * 
+	*/
+	
+	
+	private long eventValue = -1;
+	private long eventCancelValue = -1;
+	
 	public String getType() {
 		return type;
 	}
@@ -30,4 +43,29 @@ public class SensorData {
 	public void setLongValue(long longValue) {
 		this.longValue = longValue;
 	}
+	public void setLongLimit(long longValue) {
+		this.longLimit = longValue;
+	}
+	public long getLongLimit() {
+		return longLimit;
+	}
+	public void setDoubleLimit(double doubleValue) {
+		this.doubleLimit = doubleValue;
+	}
+	public double getDoubleLimit() {
+		return doubleLimit;
+	}
+	public void setEventValue(long longValue) {
+		this.eventValue = longValue;
+	}
+	public long getEventValue() {
+		return eventValue;
+	}
+	public void setEventCancelValue(long longValue) {
+		this.eventCancelValue = longValue;
+	}
+	public long getEventCancelValue() {
+		return this.eventCancelValue;
+	}
 }
+
