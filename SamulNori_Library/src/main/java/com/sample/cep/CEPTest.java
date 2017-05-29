@@ -31,35 +31,47 @@ public class CEPTest {
     public static final void main(String[] args) {
         try {
 			StatefulKnowledgeSession kSession = loadDrlWithCEP();
-			
-			
-			
+						
 			writeValue wv = new writeValue();
-			wv.setWriteValue(3);
+			wv.setWriteValue(0);
 			kSession.insert(wv);
-			EntryPoint ep1 = kSession.getEntryPoint("thermometer");		
+			EntryPoint ep1 = kSession.getEntryPoint("vibration");
 			EntryPoint ep2 = kSession.getEntryPoint("gas");
-			EntryPoint ep3 = kSession.getEntryPoint("fingerprint");
-			EntryPoint ep4 = kSession.getEntryPoint("vibration");
-			EntryPoint ep5 = kSession.getEntryPoint("dust");
-			int i;
+			EntryPoint ep3 = kSession.getEntryPoint("dust");
+			EntryPoint ep4 = kSession.getEntryPoint("fingerprint");
+			
 			
 			// Rxtx
 			Rxtx rx = new Rxtx();
-			//rx.connect("COM3");
-
-			for(i =0; i<1000; i++){
-				DustSensorData ssd = new DustSensorData(102);
-				ssd.setDustLimit(200);
-				ep5.insert(ssd);
-				ep5.insert(ssd);
+			rx.connect("COM3");
+			int i;
+			for(i =0; i<1000; i++){				System.out.println(rx.readValue);
+				if(rx.writeValue == -1) {
+				String data = new String();
+				data = rx.readValue;
+				
+				int intValue = Integer.parseInt(data.substring(6, data.indexOf("s")-1));
+				VibrationData vsd = new VibrationData(intValue);
+				intValue = Integer.parseInt((data.substring(data.indexOf("s")+8, data.indexOf("d")-1)));
+				SmokeSensorData ssd = new SmokeSensorData(intValue);
+				double doubleValue = Double.parseDouble(data.substring(data.indexOf("d")+7));
+				DustSensorData dsd = new DustSensorData(doubleValue);
+				
+				vsd.setVibrationLimit(10);
+				ssd.setSmokeLimit(10);
+				dsd.setDustLimit(200);
+				ep1.insert(vsd);
+				ep2.insert(ssd);
+				ep3.insert(dsd);
 				kSession.fireAllRules();
 				rx.writeValue = wv.getWriteValue();
 				System.out.println(rx.readValue);
 				System.out.println(rx.writeValue + " / "+wv.getWriteValue());
+				}
 			}
 			kSession.halt();
 			kSession.dispose();
+			
 			/*
 			for(int i = 0; i < THERMO_DATA.length; i++) {
 				System.out.println(i);

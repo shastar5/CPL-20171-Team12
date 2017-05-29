@@ -11,7 +11,7 @@ import java.io.OutputStream;
 
 public class Rxtx
 {                
-	static int writeValue = 12;      
+	static int writeValue = 0;      
 	static String readValue;
     public Rxtx()
     {
@@ -93,9 +93,10 @@ public class Rxtx
         {
             try
             {
-                while (writeValue!=12 )
+                while (writeValue!=-1 )
                 {
                     this.out.write(writeValue);
+                    writeValue = -1;
                 }       
             }
             catch ( IOException e )
