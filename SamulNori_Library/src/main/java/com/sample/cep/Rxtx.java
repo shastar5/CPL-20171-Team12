@@ -11,8 +11,8 @@ import java.io.OutputStream;
 
 public class Rxtx
 {                
-	static int c = 12;      
-
+	static int writeValue = 12;      
+	static String readValue;
     public Rxtx()
     {
         super();
@@ -27,20 +27,20 @@ public class Rxtx
         }
         else
         {
-            //Å¬·¡½º ÀÌ¸§À» ½Äº°ÀÚ·Î »ç¿ëÇÏ¿© Æ÷Æ® ¿ÀÇÂ
+            //Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
             CommPort commPort = portIdentifier.open(this.getClass().getName(),2000);
             
             if ( commPort instanceof SerialPort )
             {
-                //Æ÷Æ® ¼³Á¤(Åë½Å¼Óµµ ¼³Á¤. ±âº» 9600À¸·Î »ç¿ë)
+                //ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½Å¼Óµï¿½ ï¿½ï¿½ï¿½ï¿½. ï¿½âº» 9600ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
                 SerialPort serialPort = (SerialPort) commPort;
                 serialPort.setSerialPortParams(9600,SerialPort.DATABITS_8,SerialPort.STOPBITS_1,SerialPort.PARITY_NONE);
                 
-                //Input,OutputStream ¹öÆÛ »ý¼º ÈÄ ¿ÀÇÂ
+                //Input,OutputStream ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 InputStream in = serialPort.getInputStream();
                 OutputStream out = serialPort.getOutputStream();
                 
-                 //ÀÐ±â, ¾²±â ¾²·¹µå ÀÛµ¿
+                 //ï¿½Ð±ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ûµï¿½
                 (new Thread(new SerialReader(in))).start();
                 (new Thread(new SerialWriter(out))).start();
 
@@ -52,7 +52,7 @@ public class Rxtx
         }     
     }
     /** */
-    //µ¥ÀÌÅÍ ¼ö½Å
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public static class SerialReader implements Runnable 
     {
         InputStream in;
@@ -70,7 +70,7 @@ public class Rxtx
             {
                 while ( ( len = this.in.read(buffer)) > -1 )
                 {
-                    System.out.print(new String(buffer,0,len));
+                	readValue = new String(buffer,0,len);
                 }
             }
             catch ( IOException e )
@@ -79,13 +79,7 @@ public class Rxtx
             }            
         }
     }
-    public static void a(int value)
-    {
-    	c = value;
-    	System.out.print(c);
-    }
-    /** */
-    //µ¥ÀÌÅÍ ¼Û½Å
+   
     public static class SerialWriter implements Runnable 
     {
         OutputStream out;
@@ -99,11 +93,9 @@ public class Rxtx
         {
             try
             {
-                
-                while (c!=12 )
+                while (writeValue!=12 )
                 {
-                    this.out.write(c);
-                   // System.out.print(c);
+                    this.out.write(writeValue);
                 }       
             }
             catch ( IOException e )
@@ -117,7 +109,7 @@ public class Rxtx
     {
         try
         {
-            (new Rxtx()).connect("COM7"); //ÀÔ·ÂÇÑ Æ÷Æ®·Î ¿¬°á
+            (new Rxtx()).connect("COM7"); //ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         }
         catch ( Exception e )
         {

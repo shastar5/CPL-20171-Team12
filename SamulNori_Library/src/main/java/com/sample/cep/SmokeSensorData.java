@@ -1,25 +1,22 @@
 package com.sample.cep;
 
 public class SmokeSensorData extends SensorData {
-	private int as;
 	public SmokeSensorData(double value) {
 		setSmokeLevel(value);
+		setWriteValue(1<<1);
 	}
-	
 	public double getSmokeLevel() {
 		return getDoubleValue();
 	}
-	
 	public void setSmokeLevel(double value) {
 		setDoubleValue(value);
 	}
-	
-	public void seta(int a)
+	public long getSmokeLimit()
 	{
-		as = a;
+		return getLongLimit();
 	}
-	public int geta()
+	public void setSmokeLimit(long value)
 	{
-		return as;
+		setLongLimit(value);
 	}
 }

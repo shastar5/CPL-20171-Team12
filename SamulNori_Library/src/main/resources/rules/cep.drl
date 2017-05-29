@@ -34,67 +34,63 @@ declare FingerPrintData
 @role(event)
 end
 
-rule "test"
-no-loop true
-	lock-on-active true
-	when
-		ssd: SmokeSensorData(SmokeLevel > 1, value: SmokeLevel) from entry-point gas
-	then
-	    ssd.seta(10);
-end
 
 rule "High Dust Rule"
 	no-loop true
 	lock-on-active true
 	when
-		dsd: DustSensorData(dust > dsd.getDoubleLimit(), value: dust) from entry-point dust
+		wv : writeValue()
+		dsd: DustSensorData(dust > dsd.getDustLimit(), value: dust) from entry-point dust
 	then
-		Rxtx rx = new Rxtx();
-		rx.a(123);
-    	//out.write(dsd.eventValue());
+		wv.addWriteValue(dsd.getWriteValue());
 end
 
 rule "Low Dust Rule"
 	no-loop true
 	lock-on-active true
 	when
-		dsd: DustSensorData(dust <= dsd.getDoubleLimit(), value: dust) from entry-point dust
+		wv : writeValue()
+		dsd: DustSensorData(dust <= dsd.getDustLimit(), value: dust) from entry-point dust
 	then
-		//this.out.write(dsd.eventCancelValue());
+		wv.subWriteValue(dsd.getWriteValue());
 end
 	
 rule "High Smoke Rule"
 	no-loop true
 	lock-on-active true
 	when
-		ssd: SmokeSensorData(SmokeLevel > ssd.getDoubleLimit(), value: SmokeLevel) from entry-point gas
+		wv : writeValue()
+		ssd: SmokeSensorData(SmokeLevel > ssd.getSmokeLimit(), value: SmokeLevel) from entry-point gas
 	then
-		//this.out.write(gsd.eventValue());
+		wv.addWriteValue(ssd.getWriteValue());
 end
 		
 rule "Low Smoke Rule"
 	no-loop true
 	lock-on-active true
 	when
-		ssd: SmokeSensorData(SmokeLevel <= ssd.getDoubleLimit(), value: SmokeLevel) from entry-point gas
+		wv : writeValue()
+		ssd: SmokeSensorData(SmokeLevel <= ssd.getSmokeLimit(), value: SmokeLevel) from entry-point gas
 	then
-		//this.out.write(gsd.eventCancelValue());
+		wv.subWriteValue(ssd.getWriteValue());
 end
 		
 rule "Earthquake Rule"
 	no-loop true
 	lock-on-active true
 	when
-		vsd: VibrationData(Vibration > vsd.getLongLimit(), value: Vibration) from entry-point vibration
+		wv : writeValue()
+		vsd: VibrationData(Vibration > vsd.getVibrationLimit(), value: Vibration) from entry-point vibration
 	then
-		//this.out.write(vsd.eventValue());
+		wv.addWriteValue(vsd.getWriteValue());
 end
 		
 rule "Earthquake-end Rule"
 	no-loop true
 	lock-on-active true
 	when
-		vsd: VibrationData(Vibration <= vsd.getLongLimit(), value: Vibration) from entry-point vibration
+		wv : writeValue()
+		vsd: VibrationData(Vibration <= vsd.getVibrationLimit(), value: Vibration) from entry-point vibration
 	then
-		//this.out.write(vsd.eventCancelValue());
+		wv.subWriteValue(vsd.getWriteValue());
 end

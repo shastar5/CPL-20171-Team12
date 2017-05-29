@@ -9,12 +9,7 @@ public class SensorData {
 	private long longLimit = -1;
 	private double doubleLimit = -1;
 	
-	/*
-	 *
-	 * 
-	 * 
-	*/
-	
+	private int writeValue = 0;
 	
 	private long eventValue = -1;
 	private long eventCancelValue = -1;
@@ -66,6 +61,14 @@ public class SensorData {
 	}
 	public long getEventCancelValue() {
 		return this.eventCancelValue;
+	}
+	public void setWriteValue(int value)
+	{
+		this.writeValue = value;
+	}
+	public int getWriteValue()
+	{
+		return writeValue;
 	}
 }
 
