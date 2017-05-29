@@ -42,35 +42,42 @@ public class CEPTest {
 			
 			
 			// Rxtx
-			Rxtx rx = new Rxtx();
-			rx.connect("COM3");
+			Rxtx rxtx = new Rxtx();
+			rxtx.connect("COM7");
+			
+			//new Rxtx().connect("COM7");
+			
 			int i;
-			for(i =0; i<1000; i++){				System.out.println(rx.readValue);
-				if(rx.writeValue == -1) {
-				String data = new String();
-				data = rx.readValue;
-				
-				int intValue = Integer.parseInt(data.substring(6, data.indexOf("s")-1));
-				VibrationData vsd = new VibrationData(intValue);
-				intValue = Integer.parseInt((data.substring(data.indexOf("s")+8, data.indexOf("d")-1)));
-				SmokeSensorData ssd = new SmokeSensorData(intValue);
-				double doubleValue = Double.parseDouble(data.substring(data.indexOf("d")+7));
-				DustSensorData dsd = new DustSensorData(doubleValue);
-				
-				vsd.setVibrationLimit(10);
-				ssd.setSmokeLimit(10);
-				dsd.setDustLimit(200);
-				ep1.insert(vsd);
-				ep2.insert(ssd);
-				ep3.insert(dsd);
-				kSession.fireAllRules();
-				rx.writeValue = wv.getWriteValue();
-				System.out.println(rx.readValue);
-				System.out.println(rx.writeValue + " / "+wv.getWriteValue());
-				}
+			
+			
+			while(true){				
+					if(rxtx.writeValue == -1) {
+					try {String data = new String();
+					data = rxtx.readValue;
+					if(!rxtx.readValue.equals("")){
+						int intValue = Integer.parseInt(data.substring(6, data.indexOf("s")-1));
+						VibrationData vsd = new VibrationData(intValue);
+						intValue = Integer.parseInt((data.substring(data.indexOf("s")+8, data.indexOf("d")-1)));
+						SmokeSensorData ssd = new SmokeSensorData(intValue);
+						double doubleValue = Double.parseDouble(data.substring(data.indexOf("d")+7));
+						DustSensorData dsd = new DustSensorData(doubleValue);
+						
+						vsd.setVibrationLimit(500);
+						ssd.setSmokeLimit(500);
+						dsd.setDustLimit(100);
+						ep1.insert(vsd);
+						ep2.insert(ssd);
+						ep3.insert(dsd);
+						kSession.fireAllRules();
+						rxtx.writeValue = wv.getWriteValue();
+						System.out.println(rxtx.writeValue + " / "+wv.getWriteValue());
+					}
+				}catch(Exception e)
+					{
+					 Thread.sleep(1000);
+					}
+					}
 			}
-			kSession.halt();
-			kSession.dispose();
 			
 			/*
 			for(int i = 0; i < THERMO_DATA.length; i++) {
