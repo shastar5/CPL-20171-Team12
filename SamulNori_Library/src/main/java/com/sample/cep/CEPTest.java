@@ -42,23 +42,24 @@ public class CEPTest {
 			EntryPoint ep3 = kSession.getEntryPoint("fingerprint");
 			EntryPoint ep4 = kSession.getEntryPoint("vibration");
 			EntryPoint ep5 = kSession.getEntryPoint("dust");
-
+			int i;
 			
 			// Rxtx
 			Rxtx rx = new Rxtx();
-			rx.connect("COM3");
-			for(int i =0; i<10; i++){
+			//rx.connect("COM3");
+
+			for(i =0; i<1000; i++){
 				DustSensorData ssd = new DustSensorData(102);
 				ssd.setDustLimit(200);
 				ep5.insert(ssd);
 				ep5.insert(ssd);
 				kSession.fireAllRules();
-				kSession.halt();
-				kSession.dispose();
 				rx.writeValue = wv.getWriteValue();
 				System.out.println(rx.readValue);
 				System.out.println(rx.writeValue + " / "+wv.getWriteValue());
 			}
+			kSession.halt();
+			kSession.dispose();
 			/*
 			for(int i = 0; i < THERMO_DATA.length; i++) {
 				System.out.println(i);
