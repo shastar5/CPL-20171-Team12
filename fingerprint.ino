@@ -17,18 +17,28 @@
 #include <Adafruit_Fingerprint.h>
 #include <SoftwareSerial.h>
 
-uint8_t getFingerprintEnroll(uint8_t id);
+uint8_t id;
 
+uint8_t getFingerprintEnroll();
+
+// Software serial for when you dont have a hardware serial port
 // pin #2 is IN from sensor (GREEN wire)
 // pin #3 is OUT from arduino  (WHITE wire)
-SoftwareSerial mySerial(10,9);
-
+// On Leonardo/Micro/Yun, use pins 8 & 9. On Mega, just grab a hardware serialport 
+SoftwareSerial mySerial(2, 3);
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
+
+// On Leonardo/Micro or others with hardware serial, use those! #0 is green wire, #1 is white
+//Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial1);
+
 
 void setup()  
 {
+  while (!Serial);  // For Yun/Leo/Micro/Zero/...
+  delay(500);
+  
   Serial.begin(9600);
-  Serial.println("fingertest");
+  Serial.println("Adafruit Fingerprint sensor enrollment");
 
   // set the data rate for the sensor serial port
   finger.begin(57600);
@@ -40,31 +50,40 @@ void setup()
     while (1);
   }
 
-    Serial.println("Type in the ID # you want to save this finger as...");
-  uint8_t id = 0;
-  while (true) {
-    while (! Serial.available());
-    char c = Serial.read();
-    if (! isdigit(c)) break;
-    id *= 10;
-    id += c - '0';
-  }
+  Serial.println("Ready to enroll a fingerprint! Please Type in the ID # you want to save this finger as...");
+  id = readnumber();
   Serial.print("Enrolling ID #");
   Serial.println(id);
   
-  while (!  getFingerprintEnroll(id) );
-    delay(2000); 
+  while (!  getFingerprintEnroll() );
+}
+
+uint8_t readnumber(void) {
+  uint8_t num = 0;
+  boolean validnum = false; 
+  while (1) {
+    while (! Serial.available());
+    char c = Serial.read();
+    if (isdigit(c)) {
+       num *= 10;
+       num += c - '0';
+       validnum = true;
+    } else if (validnum) {
+      return num;
+    }
+  }
 }
 
 void loop()                     // run over and over again
 {
-  getFingerprintID();
-  delay(1000); 
+  delay(2000);
+  getFingerprintIDez();
 }
 
-uint8_t getFingerprintEnroll(uint8_t id) {
-  uint8_t p = -1;
-  Serial.println("Waiting for valid finger to enroll");
+uint8_t getFingerprintEnroll() {
+
+  int p = -1;
+  Serial.print("Waiting for valid finger to enroll as #"); Serial.println(id);
   while (p != FINGERPRINT_OK) {
     p = finger.getImage();
     switch (p) {
@@ -116,7 +135,7 @@ uint8_t getFingerprintEnroll(uint8_t id) {
   while (p != FINGERPRINT_NOFINGER) {
     p = finger.getImage();
   }
-
+  Serial.print("ID "); Serial.println(id);
   p = -1;
   Serial.println("Place same finger again");
   while (p != FINGERPRINT_OK) {
@@ -164,8 +183,9 @@ uint8_t getFingerprintEnroll(uint8_t id) {
       return p;
   }
   
-  
   // OK converted!
+  Serial.print("Creating model for #");  Serial.println(id);
+  
   p = finger.createModel();
   if (p == FINGERPRINT_OK) {
     Serial.println("Prints matched!");
@@ -180,10 +200,10 @@ uint8_t getFingerprintEnroll(uint8_t id) {
     return p;
   }   
   
+  Serial.print("ID "); Serial.println(id);
   p = finger.storeModel(id);
   if (p == FINGERPRINT_OK) {
     Serial.println("Stored!");
-    return -1;
   } else if (p == FINGERPRINT_PACKETRECIEVEERR) {
     Serial.println("Communication error");
     return p;
@@ -196,7 +216,7 @@ uint8_t getFingerprintEnroll(uint8_t id) {
   } else {
     Serial.println("Unknown error");
     return p;
-  }
+  }   
 }
 
 
@@ -264,6 +284,7 @@ uint8_t getFingerprintID() {
   Serial.print(" with confidence of "); Serial.println(finger.confidence); 
 }
 
+// returns -1 if failed, otherwise returns ID #
 int getFingerprintIDez() {
   uint8_t p = finger.getImage();
   if (p != FINGERPRINT_OK)  return -1;
